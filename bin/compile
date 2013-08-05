@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# fail fast
+set -o errexit
+set -o nounset
+set -o pipefail
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+scriptname=$(basename $0)
+case $# in
+  2) :;;
+  *) echo "$scriptname: usage: $scriptname BUILD_DIR CACHE_DIR" >&2; exit 2;;
+esac
+
+build_dir="$1"
+cache_dir="$2"
+ccache_max_size=50G
+num_cpus=$(grep -c ^bogomips /proc/cpuinfo)
+
+export CCACHE_DIR=$cache_dir/ccache
+export CC='ccache gcc'
+export CXX='ccache g++'
+
+ccache -M $ccache_max_size
+ccache -z
+
+mkdir -p $build_dir/build
+cd $build_dir/build >/dev/null 2>&1
+echo "-----> Running ./configure"
+../configure 2>&1 | indent
+echo "-----> Running make"
+make -j $num_cpus CC="$CC" CXX="$CXX" VERBOSE=1 2>&1 | indent
+echo "-----> Running make check"
+make -j $num_cpus check CC="$CC" CXX="$CXX" VERBOSE=1 2>&1 | indent
+cd - >/dev/null 2>&1
+
+echo "-----> Creating servo.tar.gz"
+cd $build_dir >/dev/null 2>&1
+(
+  echo build/servo
+  echo build/servo-test
+  ldd build/servo build/servo-test \
+  | awk '$2 == "=>" && $3 ~ /\/src\// {print $3}' \
+  | sed "s#^$PWD/##" \
+  | sort -u \
+) | tar -czf servo.tar.gz -T -
+cd - >/dev/null 2>&1
