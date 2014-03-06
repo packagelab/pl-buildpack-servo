@@ -17,6 +17,7 @@ cat <<EOT
 ---
 packages:
   - autoconf2.13
+  - automake
   - automake1.4
   - build-essential
   - curl
