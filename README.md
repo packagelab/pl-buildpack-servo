@@ -1,3 +1,9 @@
-# Buildpack for Mozilla Servo
+# Buildpack for Servo parallel browser
 
-Build Servo from source on Linux.
+This is a [buildpack][buildpack] for building Mozilla's [servo][Servo]
+parallel browser from source with the [Package Lab][packagelab] build
+service.
+
+[buildpack]: https://packagelab.com/docs/buildpacks
+[packagelab]: https://packagelab.com/
+[servo]: https://github.com/mozilla/servo
