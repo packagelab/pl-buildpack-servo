@@ -17,6 +17,7 @@ cat <<EOT
 ---
 packages:
   - autoconf2.13
+  - automake1.4
   - build-essential
   - curl
   - freeglut3-dev
