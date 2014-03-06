@@ -14,12 +14,16 @@ esac
 build_dir="$1"
 
 cat <<EOT
-build-essential
+---
+packages:
+  - build-essential
 EOT
 #libpango1.0-dev
 #libpng12-dev
 #pkg-config
 
-cat $build_dir/README.md \
-| grep '^sudo apt-get install ' \
-| sed 's/^sudo apt-get install //'
+packages=$(cat $build_dir/README.md | grep '^sudo apt-get install ' | sed 's/^sudo apt-get install //')
+for package in $packages
+do
+  echo "  - $package"
+done
