@@ -16,14 +16,18 @@ build_dir="$1"
 cat <<EOT
 ---
 packages:
+  - autoconf2.13
   - build-essential
+  - curl
+  - freeglut3-dev
+  - gperf
+  - libtool
+  - libfreetype6-dev
+  - libgl1-mesa-dri
+  - libglib2.0-dev
+  - msttcorefonts
+  - xorg-dev
 EOT
 #libpango1.0-dev
 #libpng12-dev
 #pkg-config
-
-packages=$(cat $build_dir/README.md | grep '^sudo apt-get install ' | sed 's/^sudo apt-get install //')
-for package in $packages
-do
-  echo "  - $package"
-done
